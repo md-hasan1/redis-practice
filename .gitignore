@@ -4,4 +4,3 @@ dist
 .vercel
 system.log
 config.bat
-.env
