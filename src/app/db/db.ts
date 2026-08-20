@@ -4,9 +4,11 @@ import * as bcrypt from "bcrypt";
 import config from "../../config";
 export const initiateSuperAdmin = async () => {
   const hashedPassword=await bcrypt.hash('123456789',Number(config.bcrypt_salt_rounds))
-  const payload: any = {
-    fullName : "Super",
+  const payload = {
+    fullName: "Super",
     email: "admin@gmail.com",
+    organization: "System Admin",
+    phone: "01700000000",
     password: hashedPassword,
     role: UserRole.ADMIN,
   };
