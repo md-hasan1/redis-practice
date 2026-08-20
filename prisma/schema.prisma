@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String         @id @default(auto()) @map("_id") @db.ObjectId
+  fullName          String
+  email             String         @unique
+  organization       String
+  phone             String         
+  profileImage      String?
+  expirationOtp     DateTime?
+  otp               Int?
+  password          String
+  fcmToken          String?
+  role              UserRole       @default(USER)
+  status            UserStatus     @default(ACTIVE)
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  receiver          Notification[] @relation("Receiver")
+  sender            Notification[] @relation("Sender")
+
+  @@map("users")
+}
+
+// Product model removed
+
+model Notification {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  receiverId String   @db.ObjectId
+  senderId   String   @db.ObjectId
+  receiver   User     @relation("Receiver", fields: [receiverId], references: [id])
+  sender     User     @relation("Sender", fields: [senderId], references: [id])
+  title      String
+  body       String
+  isRead     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("notifications")
+}
+
+enum UserRole {
+  ADMIN
+  SUPER_ADMIN
+  GUST
+  SCHOOL
+  SHOP
+  STUDENT
+  PROFESSIONAL
+  USER
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  BLOCKED
+}
