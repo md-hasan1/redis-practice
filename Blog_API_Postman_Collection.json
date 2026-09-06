@@ -1,0 +1,271 @@
+{
+  "info": {
+    "_postman_id": "c1f7b8e0-1234-5678-9abc-blogmodule01",
+    "name": "Blog Module API",
+    "description": "Postman collection for Blog Module CRUD operations with auth, search, filtering, pagination, and image upload support.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5043/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "YOUR_JWT_TOKEN_HERE",
+      "type": "string"
+    },
+    {
+      "key": "blogId",
+      "value": "YOUR_BLOG_ID_HERE",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Create Blog (JSON)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Mastering Redis and MongoDB in Node.js\",\n  \"content\": \"Redis is an ultra-fast in-memory data store, ideal for caching, session management, and pub/sub messaging in modern web applications.\",\n  \"category\": \"Backend Development\",\n  \"tags\": [\"redis\", \"mongodb\", \"nodejs\", \"prisma\"],\n  \"isPublished\": true\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/blogs",
+          "host": ["{{baseUrl}}"],
+          "path": ["blogs"]
+        },
+        "description": "Creates a new blog entry associated with the authenticated user."
+      },
+      "response": []
+    },
+    {
+      "name": "2. Create Blog (With Image Upload - form-data)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "image",
+              "type": "file",
+              "src": ""
+            },
+            {
+              "key": "data",
+              "value": "{\"title\": \"Full-Stack Caching Strategies\", \"content\": \"How to effectively invalidate cache and optimize read queries with Redis.\", \"category\": \"Performance\", \"tags\": [\"caching\", \"redis\"]}",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/blogs",
+          "host": ["{{baseUrl}}"],
+          "path": ["blogs"]
+        },
+        "description": "Uploads an image file and creates a new blog."
+      },
+      "response": []
+    },
+    {
+      "name": "3. Get All Blogs (Search, Filter, Pagination)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/blogs?searchTerm=Redis&category=Backend Development&page=1&limit=10&sortBy=createdAt&sortOrder=desc",
+          "host": ["{{baseUrl}}"],
+          "path": ["blogs"],
+          "query": [
+            {
+              "key": "searchTerm",
+              "value": "Redis",
+              "description": "Search in title, content, or category"
+            },
+            {
+              "key": "category",
+              "value": "Backend Development",
+              "description": "Filter by exact category"
+            },
+            {
+              "key": "isPublished",
+              "value": "true",
+              "description": "Filter by published status",
+              "disabled": true
+            },
+            {
+              "key": "page",
+              "value": "1",
+              "description": "Page number"
+            },
+            {
+              "key": "limit",
+              "value": "10",
+              "description": "Items per page"
+            },
+            {
+              "key": "sortBy",
+              "value": "createdAt",
+              "description": "Sort field (createdAt, title, views, etc.)"
+            },
+            {
+              "key": "sortOrder",
+              "value": "desc",
+              "description": "asc or desc"
+            }
+          ]
+        },
+        "description": "Retrieve all public blogs with optional filters, search keyword, and pagination."
+      },
+      "response": []
+    },
+    {
+      "name": "4. Get My Blogs",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/blogs/my-blogs?page=1&limit=10",
+          "host": ["{{baseUrl}}"],
+          "path": ["blogs", "my-blogs"],
+          "query": [
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "10"
+            }
+          ]
+        },
+        "description": "Retrieve all blogs authored by the currently logged-in user."
+      },
+      "response": []
+    },
+    {
+      "name": "5. Get Single Blog By ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/blogs/{{blogId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["blogs", "{{blogId}}"]
+        },
+        "description": "Retrieve a single blog by ID. Automatically increments the view count."
+      },
+      "response": []
+    },
+    {
+      "name": "6. Update Blog (JSON)",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Advanced Redis Strategies in Production\",\n  \"content\": \"Updated detailed content about Redis clustering and memory optimization.\",\n  \"category\": \"DevOps & Backend\",\n  \"tags\": [\"redis\", \"performance\", \"architecture\"]\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/blogs/{{blogId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["blogs", "{{blogId}}"]
+        },
+        "description": "Updates blog details. Requires the user to be the author or an admin."
+      },
+      "response": []
+    },
+    {
+      "name": "7. Update Blog (With New Image - form-data)",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "image",
+              "type": "file",
+              "src": ""
+            },
+            {
+              "key": "data",
+              "value": "{\"title\": \"Updated Blog Title with New Cover Image\"}",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/blogs/{{blogId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["blogs", "{{blogId}}"]
+        },
+        "description": "Updates a blog with a newly uploaded cover image."
+      },
+      "response": []
+    },
+    {
+      "name": "8. Delete Blog",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/blogs/{{blogId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["blogs", "{{blogId}}"]
+        },
+        "description": "Deletes a blog. Requires the user to be the author or an admin."
+      },
+      "response": []
+    }
+  ]
+}

@@ -1,0 +1,136 @@
+[2026-08-20T05:12:23.212Z] 400 - POST /api/v1/users - Validation Error
+User: Unauthenticated
+Stack: ZodError: [
+  {
+    "code": "invalid_type",
+    "expected": "string",
+    "received": "undefined",
+    "path": [
+      "country"
+    ],
+    "message": "Required"
+  },
+  {
+    "validation": "regex",
+    "code": "invalid_string",
+    "message": "Password must contain at least one uppercase letter",
+    "path": [
+      "password"
+    ]
+  },
+  {
+    "validation": "regex",
+    "code": "invalid_string",
+    "message": "Password must contain at least one lowercase letter",
+    "path": [
+      "password"
+    ]
+  },
+  {
+    "validation": "regex",
+    "code": "invalid_string",
+    "message": "Password must contain at least one symbol",
+    "path": [
+      "password"
+    ]
+  }
+]
+    at Object.get error [as error] (D:\Hasan\project\redis-practice\node_modules\zod\lib\types.js:55:31)
+    at ZodObject.parseAsync (D:\Hasan\project\redis-practice\node_modules\zod\lib\types.js:183:22)
+    at processTicksAndRejections (node:internal/process/task_queues:104:5)
+
+[2026-08-20T05:12:41.350Z] 400 - POST /api/v1/users - 
+User: Unauthenticated
+Stack: PrismaClientValidationError: 
+Invalid `prisma.user.findFirst()` invocation in
+D:\Hasan\project\redis-practice\src\app\modules\User\user.services.ts:22:42
+
+  19 // Check if user already exists
+  20 const otp = Number(crypto.randomInt(1000, 9999));
+  21 const otpExpiration = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+→ 22 const existingUser = await prisma.user.findFirst({
+       where: {
+         email: "Helena_Walker91@example.org"
+       },
+       select: {
+         id: true,
+         fullName: true,
+         email: true,
+         country: true,
+         ~~~~~~~
+         role: true,
+         status: true,
+         createdAt: true,
+     ?   organization?: true,
+     ?   phone?: true,
+     ?   profileImage?: true,
+     ?   expirationOtp?: true,
+     ?   otp?: true,
+     ?   password?: true,
+     ?   fcmToken?: true,
+     ?   updatedAt?: true,
+     ?   receiver?: true,
+     ?   sender?: true,
+     ?   _count?: true
+       }
+     })
+
+Unknown field `country` for select statement on model `User`. Available options are marked with ?.
+    at throwValidationException (D:\Hasan\project\redis-practice\node_modules\@prisma\client\src\runtime\core\errorRendering\throwValidationException.ts:45:9)
+    at ei.handleRequestError (D:\Hasan\project\redis-practice\node_modules\@prisma\client\src\runtime\RequestHandler.ts:202:7)
+    at ei.handleAndLogRequestError (D:\Hasan\project\redis-practice\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (D:\Hasan\project\redis-practice\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (D:\Hasan\project\redis-practice\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+
+[2026-08-20T05:14:22.505Z] 500 - POST /api/v1/users - An unexpected error occurred!
+User: Unauthenticated
+Stack: Error: Failed to send email. Please try again later.
+    at D:\Hasan\project\redis-practice\src\shared\emailSender.ts:85:11
+    at Generator.throw (<anonymous>)
+    at rejected (D:\Hasan\project\redis-practice\src\shared\emailSender.ts:6:65)
+    at processTicksAndRejections (node:internal/process/task_queues:104:5)
+
+[2026-08-20T05:23:11.036Z] 400 - POST /api/v1/auth/login - Syntax error in the request. Please verify your input.
+User: Unauthenticated
+Stack: SyntaxError: Unexpected token 'J', ..."  "email":Jesse_Fees"... is not valid JSON
+    at JSON.parse (<anonymous>)
+    at parse (D:\Hasan\project\redis-practice\node_modules\body-parser\lib\types\json.js:92:19)
+    at D:\Hasan\project\redis-practice\node_modules\body-parser\lib\read.js:128:18
+    at AsyncResource.runInAsyncScope (node:async_hooks:227:14)
+    at invokeCallback (D:\Hasan\project\redis-practice\node_modules\raw-body\index.js:238:16)
+    at done (D:\Hasan\project\redis-practice\node_modules\raw-body\index.js:227:7)
+    at IncomingMessage.onEnd (D:\Hasan\project\redis-practice\node_modules\raw-body\index.js:287:7)
+    at IncomingMessage.emit (node:events:509:28)
+    at endReadableNT (node:internal/streams/readable:1735:12)
+    at processTicksAndRejections (node:internal/process/task_queues:90:21)
+
+[2026-08-20T05:24:30.167Z] 400 - POST /api/v1/auth/login - Validation Error
+User: Unauthenticated
+Stack: ZodError: [
+  {
+    "validation": "email",
+    "code": "invalid_string",
+    "message": "Invalid email address",
+    "path": [
+      "email"
+    ]
+  }
+]
+    at Object.get error [as error] (D:\Hasan\project\redis-practice\node_modules\zod\lib\types.js:55:31)
+    at ZodObject.parseAsync (D:\Hasan\project\redis-practice\node_modules\zod\lib\types.js:183:22)
+    at processTicksAndRejections (node:internal/process/task_queues:104:5)
+
+[2026-08-20T05:25:57.228Z] 403 - POST /api/v1/auth/login - Your account is inactive
+User: Unauthenticated
+Stack: Error: Your account is inactive
+    at D:\Hasan\project\redis-practice\src\app\modules\Auth\auth.service.ts:31:11
+    at Generator.next (<anonymous>)
+    at fulfilled (D:\Hasan\project\redis-practice\src\app\modules\Auth\auth.service.ts:28:58)
+
+[2026-08-20T05:27:28.865Z] 403 - POST /api/v1/auth/login - Your account is inactive
+User: Unauthenticated
+Stack: Error: Your account is inactive
+    at D:\Hasan\project\redis-practice\src\app\modules\Auth\auth.service.ts:31:11
+    at Generator.next (<anonymous>)
+    at fulfilled (D:\Hasan\project\redis-practice\src\app\modules\Auth\auth.service.ts:28:58)
+

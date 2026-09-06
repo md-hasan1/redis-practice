@@ -1,26 +1,24 @@
 import { Server } from "http";
-
 import config from "./config";
-
 import prisma from "./shared/prisma";
-
 import app from "./app";
-
-
-
-
-
+import { createClient } from "redis";
+import redis from "./shared/redis";
 
 let server: Server;
 
 
 
+
+
 async function startServer() {
+  server = app.listen(config.port, async () => {
+    await redis?.connect();
+    await redis.set("test", "Hello Redis");
 
-  server = app.listen(config.port, () => {
-
+    const value = await redis.get("test");
+    console.log(value);
     console.log("Server is listiening on port ", config.port);
-
   });
 
 }
@@ -28,23 +26,15 @@ async function startServer() {
 
 
 async function main() {
-
   await startServer();
-
   const exitHandler = () => {
-
     if (server) {
-
       server.close(() => {
-
         console.info("Server closed!");
-
         restartServer();
-
       });
 
     } else {
-
       process.exit(1);
 
     }
@@ -54,9 +44,7 @@ async function main() {
 
 
   const restartServer = () => {
-
     console.info("Restarting server...");
-
     main();
 
   };
@@ -64,9 +52,7 @@ async function main() {
 
 
   process.on("uncaughtException", (error) => {
-
     console.log("Uncaught Exception: ", error);
-
     exitHandler();
 
   });
@@ -74,9 +60,7 @@ async function main() {
 
 
   process.on("unhandledRejection", (error) => {
-
     console.log("Unhandled Rejection: ", error);
-
     exitHandler();
 
   });
@@ -86,9 +70,7 @@ async function main() {
   // Handling the server shutdown with SIGTERM and SIGINT
 
   process.on("SIGTERM", () => {
-
     console.log("SIGTERM signal received. Shutting down gracefully...");
-
     exitHandler();
 
   });
@@ -96,9 +78,7 @@ async function main() {
 
 
   process.on("SIGINT", () => {
-
     console.log("SIGINT signal received. Shutting down gracefully...");
-
     exitHandler();
 
   });

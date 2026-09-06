@@ -13,6 +13,7 @@ import { fileUploader } from "../../../helpars/fileUploader";
 import crypto from "crypto";
 import emailSender from "../../../shared/emailSender";
 import { generateOtpEmail } from "../../../shared/emaiHTMLtext";
+import redis from "../../../shared/redis";
 
 // Create a new user
 const createUserIntoDb = async (payload: IUser) => {
@@ -100,6 +101,17 @@ const getUsersFromDb = async (
 ) => {
   const { page, limit, skip } = paginationHelper.calculatePagination(options);
   const { searchTerm, ...filterData } = params;
+// src/app/modules/User/user.services.ts
+const cacheUser = await redis.get("user:123");
+const ttl = await redis.ttl("user:123"); // বাকি কত সেকেন্ড আছে তা দেখাবে
+
+console.log("TTL remaining (seconds):", ttl);
+
+if (cacheUser) {
+  console.log("cacheUser", JSON.parse(cacheUser));
+} else {
+  console.log("cacheUser is null (Expired!)");
+}
 
   const andConditions: Prisma.UserWhereInput[] = [];
 
@@ -162,6 +174,14 @@ const getUsersFromDb = async (
     throw new ApiError(httpStatus.NOT_FOUND, "No users found");
   }
 
+await redis.mSet({
+  users: JSON.stringify(result),
+});
+const users = await redis.get("users");
+
+if (users) {
+  console.log(JSON.parse(users));
+}
   return {
     meta: {
       page,

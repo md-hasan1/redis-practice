@@ -11,9 +11,11 @@ model User {
   id                String         @id @default(auto()) @map("_id") @db.ObjectId
   fullName          String
   email             String         @unique
-  organization       String
-  phone             String         
+  country           String?
+  organization      String?
+  phone             String?         
   profileImage      String?
+  isCompleteProfile Boolean        @default(false)
   expirationOtp     DateTime?
   otp               Int?
   password          String
@@ -24,11 +26,27 @@ model User {
   updatedAt         DateTime       @updatedAt
   receiver          Notification[] @relation("Receiver")
   sender            Notification[] @relation("Sender")
+  blogs             Blog[]
 
   @@map("users")
 }
 
-// Product model removed
+model Blog {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  content     String
+  image       String?
+  category    String?
+  tags        String[] @default([])
+  views       Int      @default(0)
+  isPublished Boolean  @default(true)
+  authorId    String   @db.ObjectId
+  author      User     @relation(fields: [authorId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("blogs")
+}
 
 model Notification {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId

@@ -10,12 +10,12 @@
 
   // *!register user
   router.post(
-    "/register",
-    validateRequest(UserValidation.CreateUserValidationSchema),
+    "/",
+    // validateRequest(UserValidation.CreateUserValidationSchema),
     userController.createUser
   );
   // *!get all  user
-  // router.get("/", userController.getUsers);
+  router.get("/", userController.getUsers);
 
   
   // *!complete profile with image
