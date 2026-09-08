@@ -1,19 +1,27 @@
 import fs from 'fs';
+import path from 'path';
 
-interface Logger {
+export interface Logger {
     logRequest(method: string, endpoint: string, statusCode: number, responseTime: number): void;
-    logError(endpoint: string, errorMessage: string): void;
+    logError(endpoint: string, errorMessage: string, stack?: string): void;
     logDatabaseQuery(query: string, executionTime: number): void;
 }
 
-function createSystemLogger(logFile: string = 'system.log'): Logger {
+export function createSystemLogger(logFile: string = 'system.log'): Logger {
     function log(level: string, message: string): void {
         const timestamp: string = new Date().toISOString(); 
         const logMessage: string = `${timestamp} - ${level} - ${message}\n`;
         
-       
         console.log(logMessage.trim()); 
-        fs.appendFileSync(logFile, logMessage); 
+        try {
+            const dir = path.dirname(logFile);
+            if (dir && dir !== '.' && !fs.existsSync(dir)) {
+                fs.mkdirSync(dir, { recursive: true });
+            }
+            fs.appendFileSync(logFile, logMessage); 
+        } catch (err) {
+            console.error(`Failed to write to log file (${logFile}):`, err);
+        }
     }
 
     return {
@@ -23,9 +31,10 @@ function createSystemLogger(logFile: string = 'system.log'): Logger {
             );
         },
 
-        logError: function(endpoint: string, errorMessage: string): void {
+        logError: function(endpoint: string, errorMessage: string, stack?: string): void {
+            const stackInfo = stack ? ` | Stack: ${stack}` : '';
             log('ERROR',
-                `ERROR: ${endpoint} - ${errorMessage}`
+                `ERROR: ${endpoint} - ${errorMessage}${stackInfo}`
             );
         },
 
@@ -37,4 +46,5 @@ function createSystemLogger(logFile: string = 'system.log'): Logger {
     };
 }
 
-export default createSystemLogger;
+export const systemLogger = createSystemLogger();
+export default createSystemLogger;
