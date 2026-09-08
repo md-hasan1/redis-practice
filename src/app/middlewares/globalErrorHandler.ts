@@ -7,6 +7,7 @@ import parsePrismaValidationError from "../../errors/parsePrismaValidationError"
 import ApiError from "../../errors/ApiErrors";
 import fs from 'fs';
 import path from 'path';
+import { systemLogger } from "./logger";
 
 // TODO Replace `config.NODE_ENV` with your actual environment configuration
 
@@ -124,6 +125,11 @@ const GlobalErrorHandler = (
   };
 
   saveErrorToFile(errorLog); // 💾 RIGHT HERE
+  systemLogger.logError(
+    `${req.method} ${req.originalUrl} - Status: ${statusCode}`,
+    message,
+    err.stack
+  );
   res.status(statusCode).json({
     success: false,
     message,
